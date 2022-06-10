@@ -13,15 +13,12 @@
           "Entries": [
             {
               "Detail": {
-                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
-                "TaskToken.$": "$$.Task.Token",
-                "orderId.$": "$.detail.orderId",
-                "userId.$": "$.detail.userId",
-                "eventId.$": "$.detail.bucket.eventId"
+                "Message": "The workflow has reached timedout",
+                "TaskToken.$": "$$.Task.Token"
               },
-              "DetailType": "OrderProcessor.WorkflowStarted",
-              "EventBusName": "Serverlesspresso",
-              "Source": "awsserverlessda.serverlesspresso"
+              "DetailType": "timeout",
+              "EventBusName": "Default",
+              "Source": "emitAndWait"
             }
           ]
         },
@@ -33,20 +30,17 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::events:putEvents.waitForTaskToken",
         "Parameters": {
-          "Entries": [
-            {
-              "Detail": {
-                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
-                "TaskToken.$": "$$.Task.Token",
-                "orderId.$": "$.detail.orderId",
-                "userId.$": "$.detail.userId",
-                "eventId.$": "$.detail.bucket.eventId"
-              },
-              "DetailType": "OrderProcessor.WorkflowStarted",
-              "EventBusName": "Serverlesspresso",
-              "Source": "awsserverlessda.serverlesspresso"
-            }
-          ]
+            "Entries": [
+                {
+                  "Detail": {
+                    "Message": "The workflow has reached Phase 2",
+                    "TaskToken.$": "$$.Task.Token"
+                  },
+                  "DetailType": "Phase",
+                  "EventBusName": "Default",
+                  "Source": "emitAndWait"
+                }
+              ]
         },
         "Next": "Emit - PHASE 2",
         "ResultPath": null,
@@ -66,20 +60,17 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::events:putEvents.waitForTaskToken",
         "Parameters": {
-          "Entries": [
-            {
-              "Detail": {
-                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
-                "TaskToken.$": "$$.Task.Token",
-                "orderId.$": "$.detail.orderId",
-                "userId.$": "$.detail.userId",
-                "eventId.$": "$.detail.bucket.eventId"
-              },
-              "DetailType": "OrderProcessor.WorkflowStarted",
-              "EventBusName": "Serverlesspresso",
-              "Source": "awsserverlessda.serverlesspresso"
-            }
-          ]
+            "Entries": [
+                {
+                  "Detail": {
+                    "Message": "The workflow has reached Phase 2",
+                    "TaskToken.$": "$$.Task.Token"
+                  },
+                  "DetailType": "Phase",
+                  "EventBusName": "Default",
+                  "Source": "emitAndWait"
+                }
+              ]
         },
         "Next": "Emit - PHASE 3",
         "ResultPath": null,
@@ -99,20 +90,17 @@
         "Type": "Task",
         "Resource": "arn:aws:states:::events:putEvents.waitForTaskToken",
         "Parameters": {
-          "Entries": [
-            {
-              "Detail": {
-                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
-                "TaskToken.$": "$$.Task.Token",
-                "orderId.$": "$.detail.orderId",
-                "userId.$": "$.detail.userId",
-                "eventId.$": "$.detail.bucket.eventId"
-              },
-              "DetailType": "OrderProcessor.WorkflowStarted",
-              "EventBusName": "Serverlesspresso",
-              "Source": "awsserverlessda.serverlesspresso"
-            }
-          ]
+            "Entries": [
+                {
+                  "Detail": {
+                    "Message": "The workflow has reached Phase 3",
+                    "TaskToken.$": "$$.Task.Token"
+                  },
+                  "DetailType": "Phase",
+                  "EventBusName": "Default",
+                  "Source": "emitAndWait"
+                }
+              ]
         },
         "ResultPath": null,
         "Catch": [
