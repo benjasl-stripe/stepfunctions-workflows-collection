@@ -1,4 +1,4 @@
-# The “Emit and Wait” pattern
+# The “SaaS automation” pattern
 
 This pattern forms the basis of serverlesspresso’s event driven architecture.
 A single workflow orchestrates each order from start to completion, at various “milestones”, an event is emitted onto a serverless event bus (Event Bridge). The events are produced using the putEvents.waitForTaskToken. This allows the workflow to pause until receiving a resume command with the corresponding task token. Adding a `heartbeat` value to the putEvents task acts as a graceful timeout fallback.
