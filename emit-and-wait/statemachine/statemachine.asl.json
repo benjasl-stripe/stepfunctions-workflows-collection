@@ -1,0 +1,132 @@
+{
+    "Comment": "A description of my state machine",
+    "StartAt": "Emit - PHASE 1",
+    "States": {
+      "TIMEOUT": {
+        "Type": "Pass",
+        "Next": "Emit - TIMEDOUT"
+      },
+      "Emit - TIMEDOUT": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::events:putEvents",
+        "Parameters": {
+          "Entries": [
+            {
+              "Detail": {
+                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
+                "TaskToken.$": "$$.Task.Token",
+                "orderId.$": "$.detail.orderId",
+                "userId.$": "$.detail.userId",
+                "eventId.$": "$.detail.bucket.eventId"
+              },
+              "DetailType": "OrderProcessor.WorkflowStarted",
+              "EventBusName": "Serverlesspresso",
+              "Source": "awsserverlessda.serverlesspresso"
+            }
+          ]
+        },
+        "ResultPath": null,
+        "HeartbeatSeconds": 300,
+        "End": true
+      },
+      "Emit - PHASE 1": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::events:putEvents.waitForTaskToken",
+        "Parameters": {
+          "Entries": [
+            {
+              "Detail": {
+                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
+                "TaskToken.$": "$$.Task.Token",
+                "orderId.$": "$.detail.orderId",
+                "userId.$": "$.detail.userId",
+                "eventId.$": "$.detail.bucket.eventId"
+              },
+              "DetailType": "OrderProcessor.WorkflowStarted",
+              "EventBusName": "Serverlesspresso",
+              "Source": "awsserverlessda.serverlesspresso"
+            }
+          ]
+        },
+        "Next": "Emit - PHASE 2",
+        "ResultPath": null,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.Timeout"
+            ],
+            "Comment": "Customer timed out",
+            "ResultPath": "$.comment",
+            "Next": "TIMEOUT"
+          }
+        ],
+        "HeartbeatSeconds": 300
+      },
+      "Emit - PHASE 2": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::events:putEvents.waitForTaskToken",
+        "Parameters": {
+          "Entries": [
+            {
+              "Detail": {
+                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
+                "TaskToken.$": "$$.Task.Token",
+                "orderId.$": "$.detail.orderId",
+                "userId.$": "$.detail.userId",
+                "eventId.$": "$.detail.bucket.eventId"
+              },
+              "DetailType": "OrderProcessor.WorkflowStarted",
+              "EventBusName": "Serverlesspresso",
+              "Source": "awsserverlessda.serverlesspresso"
+            }
+          ]
+        },
+        "Next": "Emit - PHASE 3",
+        "ResultPath": null,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.Timeout"
+            ],
+            "Comment": "Customer timed out",
+            "ResultPath": "$.comment",
+            "Next": "TIMEOUT"
+          }
+        ],
+        "HeartbeatSeconds": 300
+      },
+      "Emit - PHASE 3": {
+        "Type": "Task",
+        "Resource": "arn:aws:states:::events:putEvents.waitForTaskToken",
+        "Parameters": {
+          "Entries": [
+            {
+              "Detail": {
+                "Message": "The workflow waits for your order to be submitted. It emits an event with a unique 'task token'. The token is stored in an Amazon DynamoDB table, along with your order ID.",
+                "TaskToken.$": "$$.Task.Token",
+                "orderId.$": "$.detail.orderId",
+                "userId.$": "$.detail.userId",
+                "eventId.$": "$.detail.bucket.eventId"
+              },
+              "DetailType": "OrderProcessor.WorkflowStarted",
+              "EventBusName": "Serverlesspresso",
+              "Source": "awsserverlessda.serverlesspresso"
+            }
+          ]
+        },
+        "ResultPath": null,
+        "Catch": [
+          {
+            "ErrorEquals": [
+              "States.Timeout"
+            ],
+            "Comment": "Customer timed out",
+            "ResultPath": "$.comment",
+            "Next": "TIMEOUT"
+          }
+        ],
+        "HeartbeatSeconds": 300,
+        "End": true
+      }
+    }
+  }
