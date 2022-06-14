@@ -7,7 +7,7 @@ Description: >
 
 Parameters:
   ArrayToRoundRobin:
-    Type: CommaDelimitedList
+    Type: String
     Description: The array of items to roundrobin 
     Default: "a,b,c,d"
 
@@ -47,7 +47,7 @@ Resources:
       Timeout: 3
       Environment:
         Variables:
-          EndPoint: !ref EndPoint
+          EndPoint: !Ref EndPoint
 
 Outputs:
   # StockTradingStateMachineHourlyTradingSchedule is an implicit Schedule event rule created out of Events key under Serverless::StateMachine

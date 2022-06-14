@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "stateless-roundrobin"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-2fhfgbgjnmzt"
+s3_prefix = "stateless-roundrobin"
+region = "ap-northeast-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ArrayToRoundRobin=\"a,b,c,d\" EndPoint=\"https://reqbin.com/sample/post/json\""
+image_repositories = []
