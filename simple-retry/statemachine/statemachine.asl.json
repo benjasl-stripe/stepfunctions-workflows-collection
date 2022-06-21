@@ -4,9 +4,10 @@
     "States": {
       "Call Amazon S3 ListObjectsV2": {
         "Type": "Task",
-        "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
+        "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
         "Parameters": {
-          "Bucket": "MyData"
+          "Bucket": "ExampleS3Bucket",
+          "Key": "MyData"
         },
         "Next": "Succeed State",
         "TimeoutSeconds": 5,
