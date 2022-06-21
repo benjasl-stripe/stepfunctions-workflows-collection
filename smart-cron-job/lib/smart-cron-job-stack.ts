@@ -5,12 +5,13 @@ import { Duration, Stack, StackProps,   aws_lambda as lambda, Aws,  aws_stepfunc
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+
 
 export class SmartCronJobStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    //first step - wait
     const waitState = new sfn.Wait(this, "Wait until timestamp", {
       time: sfn.WaitTime.timestampPath("$.timestamp"),
     });
@@ -22,12 +23,14 @@ export class SmartCronJobStack extends Stack {
       }
     );
 
+    //second step - inner Step Function
     const mainState = new tasks.StepFunctionsStartExecution(this,"MainState",{
         stateMachine: innerStepFunction,
         integrationPattern: sfn.IntegrationPattern.RUN_JOB
       }
     );
 
+    //top level Step Function
     const stepFunction = new sfn.StateMachine(this, "TopLevelStepFunction", {
       definition: waitState.next(mainState),
     });
