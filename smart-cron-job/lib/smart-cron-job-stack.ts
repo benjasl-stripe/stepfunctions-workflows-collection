@@ -17,19 +17,18 @@ export class SmartCronJobStack extends Stack {
 
     const passState = new sfn.Pass(this, 'PassState');
 
-    const waitToStartEventWorkflow = new sfn.StateMachine(this, "WaitEventInnerSF",{
+    const innerStepFunction = new sfn.StateMachine(this, "InnerSF",{
         definition: passState,
       }
     );
 
     const mainState = new tasks.StepFunctionsStartExecution(this,"MainState",{
-        stateMachine: waitToStartEventWorkflow,
-        integrationPattern: sfn.IntegrationPattern.RUN_JOB,
-        outputPath: "$.Output",
+        stateMachine: innerStepFunction,
+        integrationPattern: sfn.IntegrationPattern.RUN_JOB
       }
     );
 
-    const stepFunction = new sfn.StateMachine(this, "SchedulerSF", {
+    const stepFunction = new sfn.StateMachine(this, "TopLevelStepFunction", {
       definition: waitState.next(mainState),
     });
 
