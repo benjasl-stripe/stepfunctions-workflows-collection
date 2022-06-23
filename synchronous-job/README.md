@@ -9,3 +9,4 @@ With this pattern you can run a synchronized task using Run a Job (.sync).
 Execute the state machine, you will notice that the Submit Batch Job state will not advance until the job is completed.
 
 ![image](./resources/synchronous-job.png)
+
