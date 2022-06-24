@@ -1,0 +1,98 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Request response
+
+  Sample SAM Template for sync api with express SFN workflow
+
+  '
+Resources:
+  syncronousApiStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Type: EXPRESS
+      DefinitionUri: ../../statemachine/statemachine.asl.json
+      DefinitionSubstitutions:
+        sumFunction:
+          Ref: LambdaFunctionsumFunction
+        AvgFunction:
+          Ref: LambdaFunctionAvgFunction
+        MaxMinFunction:
+          Ref: LambdaFunctionMaxMinFunction
+      Policies:
+      - LambdaInvokePolicy:
+          FunctionName:
+            Ref: LambdaFunctionsumFunction
+      - LambdaInvokePolicy:
+          FunctionName:
+            Ref: LambdaFunctionAvgFunction
+      - LambdaInvokePolicy:
+          FunctionName:
+            Ref: LambdaFunctionMaxMinFunction
+  LambdaFunctionsumFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: LambdaFunctionsumFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Timeout: 3
+    Metadata:
+      SamResourceId: LambdaFunctionsumFunction
+  LambdaFunctionAvgFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: LambdaFunctionAvgFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Timeout: 3
+    Metadata:
+      SamResourceId: LambdaFunctionAvgFunction
+  LambdaFunctionMaxMinFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: LambdaFunctionMaxMinFunction
+      Handler: app.lambdaHandler
+      Runtime: nodejs14.x
+      Timeout: 3
+    Metadata:
+      SamResourceId: LambdaFunctionMaxMinFunction
+  RESTApiforSyncWF:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location: ../../api.yaml
+  RestApiRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - apigateway.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: AllowSFNExec
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action: states:StartSyncExecution
+            Resource:
+              Fn::GetAtt:
+              - syncronousApiStateMachine
+              - Arn
+Outputs:
+  syncronousApiStateMachine:
+    Description: state machine ARN
+    Value:
+      Ref: syncronousApiStateMachine
+  API:
+    Description: API Gateway endpoint URL
+    Value:
+      Fn::Sub: https://${ RESTApiforSyncWF}.execute-api.${AWS::Region}.amazonaws.com/Prod
